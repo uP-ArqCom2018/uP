@@ -3,56 +3,64 @@
 de cada bloque en particular como asi tambien las definiciones
 del funcionamiento general del uP.
 
-#Lineamientos generales
+## Lineamientos generales
 
-*Direccionamiento a byte o palabra  ****por definir
-*Memoria de programa y datos de 4kb
+Direccionamiento a byte o palabra  ****por definir
+Memoria de programa y datos de 4kb
 
-#lineamientos por bloques
+##lineamientos por bloques
 
-## Contador de programa (definido)
+### Contador de programa (definido)
 
 ademas del PC este bloque contendra los elementos basicos 
 para el manejo de saltos.
 
 *Entradas
+
   64  bit <-- ImmGen
   1   bit <--  ALU (Zero_o)
   1   bit <--  UC para salto condicional 
   1   bit <--  UC para salto incondicional
   
 *Salidas
-D_o --> memoria de programa 
 
-## Memoria de programa 
+        D_o --> memoria de programa 
+
+### Memoria de programa 
 *Entrada
-Q_o <-- PC
+
+        Q_o <-- PC
 
 *Salidas
-D_o --> intruciones
+
+        D_o --> intruciones
 
 
-## memoria de datos 
+### memoria de datos 
  mux_2 interno (dentro del bloque) 
  
 *Entradas 
+  
   Data_i <-- Banco de registros
   ADDR_i <-- ALU
   W/R    <-- UC
   mem_reg <-- UC
   
  *Salidas
- W_c_i --> banco de registros
  
- ## ALU 
+  W_c_i --> banco de registros
+ 
+ ### ALU 
  mux_1 interno
   
   *Entradas
+  
     R_a_o   <-- banco de registros
     R_b_o   <-- banco de registros
     64 Bits <-- ImmGen
     ALU_op  <-- ALU
     ALU_src <-- ALU
+  
   *Salidas
   
     Y_o   --> memoria de datos
@@ -62,9 +70,11 @@ D_o --> intruciones
  por el momento se considera ALU_op como n bits hasta poder definirlo
  
  *Entradas
+ 
  instruccion <-- memoria de programa
  
  *Salidas
+ 
     ALU_op      -->  ALU
     ALU_sr      -->  ALU  *** podria ser parte del bus ALU_op
     Reg_w_i     --> banco de registros
