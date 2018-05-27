@@ -1,0 +1,11 @@
+
+
+#Lineamientos generales
+*Direccionamiento a byte
+*Memoria de programa y datos de 4kb
+
+#lineamientos por bloques
+
+## PC
+*Entradas
+* 
