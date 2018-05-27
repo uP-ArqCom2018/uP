@@ -6,6 +6,7 @@ del funcionamiento general del uP.
 ## Lineamientos generales
 
 Direccionamiento a byte o palabra  ****por definir
+
 Memoria de programa y datos de 4kb
 
 ##lineamientos por bloques
@@ -17,23 +18,23 @@ para el manejo de saltos.
 
 *Entradas
 
-  64  bit <-- ImmGen
-  1   bit <--  ALU (Zero_o)
-  1   bit <--  UC para salto condicional 
-  1   bit <--  UC para salto incondicional
+      64  bit       <-- ImmGen
+      Zero_o        <--  ALU 
+      cond_Brach    <--  UC  
+      uncond_Brach  <--  UC 
   
 *Salidas
 
-        D_o --> memoria de programa 
+    D_o --> memoria de programa 
 
 ### Memoria de programa 
 *Entrada
 
-        Q_o <-- PC
+    Q_o <-- PC
 
 *Salidas
 
-        D_o --> intruciones
+    D_o --> intruciones
 
 
 ### memoria de datos 
@@ -41,14 +42,14 @@ para el manejo de saltos.
  
 *Entradas 
   
-  Data_i <-- Banco de registros
-  ADDR_i <-- ALU
-  W/R    <-- UC
-  mem_reg <-- UC
+    Data_i <-- Banco de registros
+    ADDR_i <-- ALU
+    W/R    <-- UC
+    mem_reg <-- UC
   
  *Salidas
  
-  W_c_i --> banco de registros
+    W_c_i --> banco de registros
  
  ### ALU 
  mux_1 interno
@@ -71,7 +72,7 @@ para el manejo de saltos.
  
  *Entradas
  
- instruccion <-- memoria de programa
+    instruccion <-- memoria de programa
  
  *Salidas
  
@@ -81,4 +82,5 @@ para el manejo de saltos.
     R/W         --> memeria de datos
     mem_reg     --> memoria de datos *** podria ser una señal de 2 bits junto con R/W
     cond_Brach  --> program counter 
-  uncond_Brach  --> program counter
+    uncond_Brach  --> program counter
+  
