@@ -31,3 +31,30 @@ Q_o <-- PC
 
 *Salidas
 D_o --> intruciones
+
+
+## memoria de datos 
+ mux_2 interno (dentro del bloque) 
+ 
+*Entradas 
+  Data_i <-- Banco de registros
+  ADDR_i <-- ALU
+  W/R    <-- UC
+  mem_reg <-- UC
+  
+ *Salidas
+ W_c_i --> banco de registros
+ 
+ ## ALU 
+ mux_1 interno
+  
+  *Entrdas
+    R_a_o   <-- banco de registros
+    R_b_o   <-- banco de registros
+    64 Bits <-- ImmGen
+    ALU_op  <-- ALU
+    ALU_src <-- ALU
+  *Salidas
+  
+    Y_o   --> memoria de datos
+    Zero_o --> contador de programa
