@@ -1,7 +1,7 @@
-**info
- Este archivo contiene informacion util sobre los lineamientos 
+# Info 
+**Este archivo contiene informacion util sobre los lineamientos 
 de cada bloque en particular como asi tambien las definiciones
-del funcionamiento general del uP.
+del funcionamiento general del uP.**
 
 ## Lineamientos generales
 
@@ -9,30 +9,32 @@ Direccionamiento a byte o palabra  ****por definir
 
 Memoria de programa y datos de 4kb
 
-##lineamientos por bloques
+## Lineamientos por bloques
 
 ### Contador de programa (definido)
 
 ademas del PC este bloque contendra los elementos basicos 
 para el manejo de saltos.
 
-*Entradas
+* Entradas
 
       64  bit       <-- ImmGen
       Zero_o        <--  ALU 
       cond_Brach    <--  UC  
       uncond_Brach  <--  UC 
-  
-*Salidas
+
+* Salidas
 
     D_o --> memoria de programa 
 
+![imagen contador de programa](https://github.com/uP-ArqCom2018/uP/blob/master/Contador_de_Programa.jpg)
+
 ### Memoria de programa 
-*Entrada
+* Entrada
 
     Q_o <-- PC
 
-*Salidas
+* Salidas
 
     D_o --> intruciones
 
@@ -40,21 +42,21 @@ para el manejo de saltos.
 ### memoria de datos 
  mux_2 interno (dentro del bloque) 
  
-*Entradas 
+* Entradas 
   
     Data_i <-- Banco de registros
     ADDR_i <-- ALU
     W/R    <-- UC
     mem_reg <-- UC
   
- *Salidas
+ * Salidas
  
     W_c_i --> banco de registros
  
  ### ALU 
  mux_1 interno
   
-  *Entradas
+  * Entradas
   
     R_a_o   <-- banco de registros
     R_b_o   <-- banco de registros
@@ -62,7 +64,7 @@ para el manejo de saltos.
     ALU_op  <-- ALU
     ALU_src <-- ALU
   
-  *Salidas
+  * Salidas
   
     Y_o   --> memoria de datos
     Zero_o --> contador de programa
@@ -70,11 +72,11 @@ para el manejo de saltos.
  ## UC
  por el momento se considera ALU_op como n bits hasta poder definirlo
  
- *Entradas
+ * Entradas
  
     instruccion <-- memoria de programa
  
- *Salidas
+ * Salidas
  
     ALU_op      -->  ALU
     ALU_sr      -->  ALU  *** podria ser parte del bus ALU_op
