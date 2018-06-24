@@ -38,12 +38,12 @@ Memoria de programa y datos de 4kb
 
 ## lineamientos por bloques
 
-### Contador de programa (definido)
+### Contador de programa 
 
 ademas del PC este bloque contendra los elementos basicos 
 para el manejo de saltos.
 
-*Entradas
+* Entradas
 
       64  bit       <-- ImmGen
       Zero_o        <--  ALU 
@@ -95,7 +95,7 @@ para el manejo de saltos.
     Zero_o --> contador de programa
     
  ## UC
- por el momento se considera ALU_op como n bits hasta poder definirlo
+  ALU_op es de 4 bits 
  
  * Entradas
  
@@ -104,9 +104,9 @@ para el manejo de saltos.
  * Salidas
  
     ALU_op      -->  ALU
-    ALU_sr      -->  ALU  *** podria ser parte del bus ALU_op
+    ALU_sr      -->  ALU  
     Reg_w_i     --> banco de registros
     R/W         --> memeria de datos
-    mem_reg     --> memoria de datos *** podria ser una señal de 2 bits junto con R/W
+    mem_reg     --> memoria de datos 
     cond_Brach  --> program counter 
     uncond_Brach  --> program counter
