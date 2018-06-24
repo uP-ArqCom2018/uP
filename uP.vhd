@@ -19,8 +19,7 @@
 	  );
      port (
          CLK_i: in std_logic;
-         reset: in std_logic);
-						
+         reset: in std_logic);			
  end entity;
  
  architecture MyHDL of uP is
@@ -61,7 +60,7 @@
   end component Memoria_Programa;
   
   -- Componente: Banco de registros
-  -- Autoes:Postemky,Villarreal
+  -- Autoes:Postemsky,Villarreal
   component bank_reg IS
   GENERIC(
     n_reg : integer := 64;  -- cantidad de bits registros
@@ -80,7 +79,7 @@
 	END component bank_reg;
 	
 	--Componente:ImmGen
-   -- Autoes:Postemky,Villarreal
+   -- Autoes:Postemsky,Villarreal
 
   component ImmGen IS
   GENERIC(
@@ -92,10 +91,23 @@
       );   
 END component ImmGen; 
   
+  component ALU is
+		generic (N : integer :=64);
+		  port (
+        A_i      : in  std_logic_vector(N - 1 downto 0);
+        B_i      : in  std_logic_vector(N - 1 downto 0);
+        SAL_o    : out std_logic_vector(N - 1 downto 0);
+		  CARRY_o  : out std_logic;
+		  ALUop_i  : in  unsigned(3 downto 0);
+		  zERO_o   : out std_logic
+          );
+end component ALU;
+  
+  
   --Componente: Memoria de Datos
   --Autores: Chavez,Santamaria,Sanchez
 	component Memoria_de_Datos is
-	generic (size: integer );
+	generic (size: integer :=64);
 	  
      port (
          CLK_i: in std_logic;
@@ -117,29 +129,52 @@ END component ImmGen;
 	signal cond	:	std_logic;
 	signal zero	:  std_logic;
 	signal rst:   	std_logic;
+	signal MemWrite: std_logic;
+	signal MemRead:  std_logic;
 	signal a,b,c: 	std_logic_vector(bit_dir_reg-1 downto 0);   
    signal reg_w:	std_logic;
 	signal w_c: 	std_logic_vector(n_reg-1 downto 0);
    signal r_a,r_b:	std_logic_vector(n_reg-1 downto 0);
 	signal instr:	std_logic_vector((4*ancho_inst)-1 downto 0);
-
+	signal sal_o:	std_logic_vector (63 downto 0);
+	signal data_o:	std_logic_vector (63 downto 0);
 begin
  -- Mapeo de componentes
  
- comp_PC:PC generic map(N,anchodataout)
-		port map(addr,clk,imgen,incond,cond,zero,rst);
+ --comp_PC:PC generic map(N,anchodataout)
+	--	port map(addr,clk,imgen,incond,cond,zero,rst);
  
  comp_MemPro: Memoria_Programa
 			port map(clk,rst,addr,instr);
  
  comp_banco: bank_reg 
-			port map (a,b,c,reg_w,reset,clk,w_c,r_a,r_b);
+			port map (a,b,c,reg_w,rst,clk,w_c,r_a,r_b);
  
  comp_immgen: ImmGen
 			port map(instr,imgen);
 
+ comp_Memdato: Memoria_de_Datos
+			port map(clk,Sal_o,r_b,data_o,MemWrite,MemRead);
 -- Asignaciones
-
+	
+	clk<=CLK_i;
+	rst<= reset;
+	
+	a(0) <= instr(15);
+	a(1) <= instr(16);
+	a(2) <= instr(17);
+	a(3) <= instr(18);
+	a(4) <= instr(19);
+	b(0) <= instr(20);
+	b(1) <= instr(21);
+	b(2) <= instr(22);
+	b(3) <= instr(23);
+	b(4) <= instr(24);
+	c(0) <= instr(7);
+	c(1) <= instr(8);
+	c(2) <= instr(9);
+	c(3) <= instr(10);
+	c(4) <= instr(11);
 	
 
 
