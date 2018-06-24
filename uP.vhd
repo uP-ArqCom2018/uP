@@ -15,11 +15,12 @@
 	 ancho_inst: integer := 8;
 	 ancho_address:integer := 10;
 	 N: integer :=32;
-	 anchodataout: integer :=32
+	 anchodataout: integer :=32;
+	 opcode	:	integer	:=	32
 	  );
      port (
          CLK_i: in std_logic;
-         reset: in std_logic);			
+         reset: in std_logic);	
  end entity;
  
  architecture MyHDL of uP is
@@ -118,31 +119,67 @@ end component ALU;
 			MemRead: in std_logic);
 			
 	end component Memoria_de_Datos;
+
+	component UC is
+	generic(
+		opcode	:	integer	:=	32
+	);
+	port(
+		INSTR_i	:	in		std_logic_vector(opcode-1 downto 0);		-- instruccion de entrada
+		Condbranch_o		:	out	std_logic;								-- salto
+		Ucondbranch_o	:	out	std_logic;									-- salto incondicional
+		MemRead_o	:	out	std_logic;										-- lectura de memoria
+		MemtoReg_o	:	out	std_logic;										-- memoria a registro
+		ALUop_o		:	out	std_logic_vector(3 downto 0);				-- seleccion de operacion de ALU
+		MemWrite_o	:	out	std_logic;										-- escritura de memoria
+		ALUsrc_o		:	out	std_logic;										-- selecciona entre un inmediato y un registro
+		Reg_W_o	:	out	std_logic);											-- escritura de registro
+	
+end component UC;
+	
+	
+	 component multi is
+    
+     port (
+     		control: in std_logic;
+			In1: in std_logic_vector (63 downto 0);
+			In0: in std_logic_vector (63 downto 0);
+			Sal: out std_logic_vector (63 downto 0));
+			
+			end component multi;
+			
  
 --Señales
 
+--Señales de control
+	signal cond,incond: 	std_logic;   --UC  -> PC 
+	signal zero	:  		std_logic;		 --ALU -> PC
+	signal alu_sr:   		std_logic;		 --UC  -> mux1
+	signal memtoreg:  	std_logic;		 --UC  -> mux2
+	signal alu_op:   		unsigned (3 downto 0); 	--UC -> ALU
+	signal alu_o:   		std_logic_vector (3 downto 0);
+	signal MemWrite,MemRead: 	std_logic; 		--UC -> memoria de datos
+	signal reg_w:			std_logic;		--UC -> banco de registros
 	
+--Señales Internas
 	signal addr: 	std_logic_vector(ancho_address-1 downto 0); 
 	signal clk: 	std_logic;
 	signal imgen: 	std_logic_vector(2*N-1 downto 0);
-	signal incond: std_logic;
-	signal cond	:	std_logic;
-	signal zero	:  std_logic;
 	signal rst:   	std_logic;
-	signal MemWrite: std_logic;
-	signal MemRead:  std_logic;
+	signal co:   	std_logic;
 	signal a,b,c: 	std_logic_vector(bit_dir_reg-1 downto 0);   
-   signal reg_w:	std_logic;
-	signal w_c: 	std_logic_vector(n_reg-1 downto 0);
+   signal w_c: 	std_logic_vector(n_reg-1 downto 0);
    signal r_a,r_b:	std_logic_vector(n_reg-1 downto 0);
 	signal instr:	std_logic_vector((4*ancho_inst)-1 downto 0);
-	signal sal_o:	std_logic_vector (63 downto 0);
+	signal sal:	std_logic_vector (63 downto 0);
 	signal data_o:	std_logic_vector (63 downto 0);
+	signal aux : 	std_logic_vector (63 downto 0);
+	signal dat : 	std_logic_vector (63 downto 0);
 begin
  -- Mapeo de componentes
  
- --comp_PC:PC generic map(N,anchodataout)
-	--	port map(addr,clk,imgen,incond,cond,zero,rst);
+ comp_PC:PC
+		port map(addr,clk,imgen,incond,cond,zero,rst);
  
  comp_MemPro: Memoria_Programa
 			port map(clk,rst,addr,instr);
@@ -153,8 +190,19 @@ begin
  comp_immgen: ImmGen
 			port map(instr,imgen);
 
+ comp_alu: ALU
+			port map (r_a,aux,sal,co,alu_op,zero);
+				
  comp_Memdato: Memoria_de_Datos
-			port map(clk,Sal_o,r_b,data_o,MemWrite,MemRead);
+			port map(clk,Sal,r_b,dat,MemWrite,MemRead);
+ comp_UC: UC
+			port map(instr,cond,incond,MemRead,memtoreg,alu_o,MemWrite,alu_sr,reg_w);
+			
+ comp_mux1:multi
+			port map (alu_sr,imgen,r_b,aux);
+			
+ comp_mux2:multi
+			port map (memtoreg,dat,sal,w_c);
 -- Asignaciones
 	
 	clk<=CLK_i;
@@ -176,7 +224,6 @@ begin
 	c(3) <= instr(10);
 	c(4) <= instr(11);
 	
-
 
 
 	    
