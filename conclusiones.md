@@ -9,7 +9,7 @@ Direccionamiento a byte o palabra  ****por definir
 
 Memoria de programa y datos de 4kb
 
-##lineamientos por bloques
+## lineamientos por bloques
 
 ### Contador de programa (definido)
 
