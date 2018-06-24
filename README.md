@@ -20,11 +20,11 @@ Aqui se describe como funciona el modulo.
 Al escribir el nombre de algun puerto, senal o variable, deben seguirse
 los siguientes lineamientos:
 
-*Puertos:
+* Puertos:
 * Entradas: < NOMBRE EN MAYUSCULA >_i
 * Salidas: < NOMBRE EN MAYUSCULA >_o
 
-*Señales:
+* Señales:
 * Entradas: < nombre en minuscula >_i
 * Salidas: < nombre en minuscula >_o
 
