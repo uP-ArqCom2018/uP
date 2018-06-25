@@ -130,7 +130,8 @@ end component ALU;
 	Reg_W_o: OUT std_logic;
 	MemtoReg_o: OUT std_logic;
 	MemRead_o: OUT std_logic;
-	ALUop_o: OUT std_logic_vector(3 downto 0));  
+	ALUop_o: OUT std_logic_vector(3 downto 0);
+	NOzero: OUT std_logic);  
 	
 	end component unidad_control;
 	
@@ -156,6 +157,7 @@ end component ALU;
 	signal alu_op:   		std_logic_vector (3 downto 0);--UC -> ALU
 	signal MemWrite,MemRead: 	std_logic; 		--UC -> memoria de datos
 	signal reg_w:			std_logic;		--UC -> banco de registros
+	signal NOzero			std_logic;		-- UNIDAD DE CONTRO -> MUX
 	
 --Señales Internas
 	signal addr: 	std_logic_vector(ancho_address-1 downto 0); 
@@ -191,7 +193,7 @@ begin
  comp_Memdato: Memoria_de_Datos
 			port map(clk,Sal,r_b,dat,MemWrite,MemRead);
  comp_UC: unidad_control
-			port map(instr,MemWrite,alu_sr,incond,cond,reg_w,memtoreg,MemRead,alu_op);
+			port map(instr,MemWrite,alu_sr,incond,cond,reg_w,memtoreg,MemRead,alu_op,NOzero);
 			
  comp_mux1:multi
 			port map (alu_sr,imgen,r_b,aux);
