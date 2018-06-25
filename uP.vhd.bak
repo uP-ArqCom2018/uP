@@ -120,19 +120,22 @@ end component ALU;
 			
 	end component Memoria_de_Datos;
 
-	component unidad_control is
-	PORT(
-	INSTR_i: IN std_logic_vector(31 downto 0);
-	MemWrite_o: OUT std_logic;
-	ALUsrc_o: OUT std_logic;
-	Uncondbranch_o: OUT std_logic;
-	Condbranch_o: OUT std_logic;
-	Reg_W_o: OUT std_logic;
-	MemtoReg_o: OUT std_logic;
-	MemRead_o: OUT std_logic;
-	ALUop_o: OUT std_logic_vector(3 downto 0));  
+	component UC is
+	generic(
+		opcode	:	integer	:=	32
+	);
+	port(
+		INSTR_i	:	in		std_logic_vector(opcode-1 downto 0);		-- instruccion de entrada
+		Condbranch_o		:	out	std_logic;								-- salto
+		Ucondbranch_o	:	out	std_logic;									-- salto incondicional
+		MemRead_o	:	out	std_logic;										-- lectura de memoria
+		MemtoReg_o	:	out	std_logic;										-- memoria a registro
+		ALUop_o		:	out	std_logic_vector(3 downto 0);				-- seleccion de operacion de ALU
+		MemWrite_o	:	out	std_logic;										-- escritura de memoria
+		ALUsrc_o		:	out	std_logic;										-- selecciona entre un inmediato y un registro
+		Reg_W_o	:	out	std_logic);											-- escritura de registro
 	
-	end component unidad_control;
+end component UC;
 	
 	
 	 component multi is
@@ -192,8 +195,8 @@ begin
 				
  comp_Memdato: Memoria_de_Datos
 			port map(clk,Sal,r_b,dat,MemWrite,MemRead);
- comp_UC: unidad_control
-			port map(instr,MemWrite,alu_sr,incond,cond,reg_w,memtoreg,MemRead,alu_o);
+ comp_UC: UC
+			port map(instr,cond,incond,MemRead,memtoreg,alu_o,MemWrite,alu_sr,reg_w);
 			
  comp_mux1:multi
 			port map (alu_sr,imgen,r_b,aux);
