@@ -151,13 +151,14 @@ end component ALU;
 
 --Señales de control
 	signal cond,incond: 	std_logic;   --UC  -> PC 
-	signal zero	:  		std_logic;		 --ALU -> PC
+	signal zero_i	:  		std_logic;		 --MUX -> PC
+	signal zero_o	:  		std_logic;		 --ALU -> MUX (bit 0)
 	signal alu_sr:   		std_logic;		 --UC  -> mux1
 	signal memtoreg:  	std_logic;		 --UC  -> mux2
 	signal alu_op:   		std_logic_vector (3 downto 0);--UC -> ALU
 	signal MemWrite,MemRead: 	std_logic; 		--UC -> memoria de datos
 	signal reg_w:			std_logic;		--UC -> banco de registros
-	signal NOzero			std_logic;		-- UNIDAD DE CONTRO -> MUX
+	signal NOzero:			std_logic;		-- UNIDAD DE CONTRO -> MUX
 	
 --Señales Internas
 	signal addr: 	std_logic_vector(ancho_address-1 downto 0); 
@@ -176,7 +177,7 @@ begin
  -- Mapeo de componentes
  
  comp_PC:PC
-		port map(addr,clk,imgen,incond,cond,zero,rst);
+		port map(addr,clk,imgen,incond,cond,zero_i,rst);
  
  comp_MemPro: Memoria_Programa
 			port map(clk,rst,addr,instr);
@@ -188,7 +189,7 @@ begin
 			port map(instr,imgen);
 
  comp_alu: ALU
-			port map (r_a,aux,sal,alu_op,zero);
+			port map (r_a,aux,sal,alu_op,zero_o);
 				
  comp_Memdato: Memoria_de_Datos
 			port map(clk,Sal,r_b,dat,MemWrite,MemRead);
@@ -200,10 +201,18 @@ begin
 			
  comp_mux2:multi
 			port map (memtoreg,dat,sal,w_c);
+ 
+ 
 -- Asignaciones
+	--Agrego el mux para solucionar el problema del salto cuando es distinto de cero
+	WITH NOzero SELECT
+		zero_i<= not(zero_o) when '1',
+					zero_o when others;
+
 	
 	clk<=CLK_i;
 	rst<= reset;
+	
 	
 	a(0) <= instr(15);
 	a(1) <= instr(16);
