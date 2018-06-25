@@ -50,7 +50,7 @@ estimulos: process
 		wait for 200 ns;
 		reset <='1';
 		wait for 100000 ns;
-		wait;
+
 	end process;
   -- put concurrent statements here.
 END ARCHITECTURE Behavioral; -- Of entity uP_tb

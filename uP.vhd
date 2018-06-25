@@ -170,7 +170,6 @@ end component ALU;
    signal r_a,r_b:	std_logic_vector(n_reg-1 downto 0);
 	signal instr:	std_logic_vector((4*ancho_inst)-1 downto 0);
 	signal sal:	std_logic_vector (63 downto 0);
-	signal data_o:	std_logic_vector (63 downto 0);
 	signal aux : 	std_logic_vector (63 downto 0);
 	signal dat : 	std_logic_vector (63 downto 0);
 begin
