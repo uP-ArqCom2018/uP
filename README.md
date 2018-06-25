@@ -55,16 +55,16 @@ para el manejo de saltos.
   
 * Salidas
 
-    D_o --> memoria de programa 
+      D_o --> memoria de programa 
 
 ### Memoria de programa 
 * Entrada
 
-    Q_o <-- PC
+      Q_o <-- PC
 
 * Salidas
 
-    D_o --> intruciones
+      D_o --> intruciones
 
 
 ### memoria de datos 
@@ -72,44 +72,44 @@ para el manejo de saltos.
  
 * Entradas 
   
-    Data_i <-- Banco de registros
-    ADDR_i <-- ALU
-    W/R    <-- UC
-    mem_reg <-- UC
+      Data_i <-- Banco de registros
+      ADDR_i <-- ALU
+      W/R    <-- UC
+      mem_reg <-- UC
   
  * Salidas
  
-    W_c_i --> banco de registros
+      W_c_i --> banco de registros
  
  ### ALU 
  mux_1 interno
   
-  * Entradas
+    * Entradas
   
-    R_a_o   <-- banco de registros
-    R_b_o   <-- banco de registros
-    64 Bits <-- ImmGen
-    ALU_op  <-- ALU
-    ALU_src <-- ALU
+      R_a_o   <-- banco de registros
+      R_b_o   <-- banco de registros
+      64 Bits <-- ImmGen
+      ALU_op  <-- ALU
+      ALU_src <-- ALU
   
-  * Salidas
+    * Salidas
   
-    Y_o   --> memoria de datos
-    Zero_o --> contador de programa
+      Y_o   --> memoria de datos
+      Zero_o --> contador de programa
     
  ## UC
   ALU_op es de 4 bits 
  
- * Entradas
+    * Entradas
  
-    instruccion <-- memoria de programa
+      instruccion <-- memoria de programa
  
- * Salidas
+    * Salidas
  
-    ALU_op      -->  ALU
-    ALU_sr      -->  ALU  
-    Reg_w_i     --> banco de registros
-    R/W         --> memeria de datos
-    mem_reg     --> memoria de datos 
-    cond_Brach  --> program counter 
-    uncond_Brach  --> program counter
+      ALU_op      -->  ALU
+      ALU_sr      -->  ALU  
+      Reg_w_i     --> banco de registros
+      R/W         --> memeria de datos
+      mem_reg     --> memoria de datos 
+      cond_Brach  --> program counter 
+      uncond_Brach  --> program counter
