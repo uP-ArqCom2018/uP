@@ -108,7 +108,7 @@ end component ALU;
   --Componente: Memoria de Datos
   --Autores: Chavez,Santamaria,Sanchez
 	component Memoria_de_Datos is
-	generic (size: integer :=64);
+	generic (size: integer :=10);
 	  
      port (
          CLK_i: in std_logic;

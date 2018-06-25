@@ -1,6 +1,10 @@
 -- Test bench microprocesador: se realiza la prueba de un código
 -- simple que debe resolver una iteración, leyendo y escribiendo
 -- en memoria de datos.
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
 ENTITY uP_tb IS
 END ENTITY uP_tb;
 
@@ -19,11 +23,14 @@ ARCHITECTURE Behavioral OF uP_tb IS
      port (
          CLK_i: in std_logic;
          reset: in std_logic);
-  END COMPONENT;
+  END COMPONENT; 
+  
+ 
+	SIGNAL CLK_i: std_logic;
+	SIGNAL reset: std_logic;
   
 BEGIN
-	SIGNAL CLK_i : std_logic;
-	SIGNAL reset : std_logic;
+
 
 micro: uP
 		port map(CLK_i,reset);
@@ -44,5 +51,6 @@ estimulos: process
 		reset <='1';
 		wait for 100000 ns;
 		wait;
+	end process;
   -- put concurrent statements here.
 END ARCHITECTURE Behavioral; -- Of entity uP_tb
