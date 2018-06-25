@@ -91,17 +91,17 @@
       Inmed_o : OUT    std_logic_vector(len_o - 1 downto 0) -- Inmediato de salida 
       );   
 END component ImmGen; 
+
+-- Componente: ALU
   
   component ALU is
 		generic (N : integer :=64);
-		  port (
-        A_i      : in  std_logic_vector(N - 1 downto 0);
-        B_i      : in  std_logic_vector(N - 1 downto 0);
-        SAL_o    : out std_logic_vector(N - 1 downto 0);
-		  CARRY_o  : out std_logic;
-		  ALUop_i  : in  unsigned(3 downto 0);
-		  zERO_o   : out std_logic
-          );
+		port (
+			A_i      : in  std_logic_vector(N - 1 downto 0);
+			B_i      : in  std_logic_vector(N - 1 downto 0);
+			SAL_o    : out std_logic_vector(N - 1 downto 0);
+			ALUop_i  : in  std_logic_vector(3 downto 0);
+			Zero_o   : out std_logic);
 end component ALU;
   
   
@@ -153,8 +153,7 @@ end component ALU;
 	signal zero	:  		std_logic;		 --ALU -> PC
 	signal alu_sr:   		std_logic;		 --UC  -> mux1
 	signal memtoreg:  	std_logic;		 --UC  -> mux2
-	signal alu_op:   		unsigned (3 downto 0); 	--UC -> ALU
-	signal alu_o:   		std_logic_vector (3 downto 0);
+	signal alu_op:   		std_logic_vector (3 downto 0);--UC -> ALU
 	signal MemWrite,MemRead: 	std_logic; 		--UC -> memoria de datos
 	signal reg_w:			std_logic;		--UC -> banco de registros
 	
@@ -163,7 +162,6 @@ end component ALU;
 	signal clk: 	std_logic;
 	signal imgen: 	std_logic_vector(2*N-1 downto 0);
 	signal rst:   	std_logic;
-	signal co:   	std_logic;
 	signal a,b,c: 	std_logic_vector(bit_dir_reg-1 downto 0);   
    signal w_c: 	std_logic_vector(n_reg-1 downto 0);
    signal r_a,r_b:	std_logic_vector(n_reg-1 downto 0);
@@ -188,12 +186,12 @@ begin
 			port map(instr,imgen);
 
  comp_alu: ALU
-			port map (r_a,aux,sal,co,alu_op,zero);
+			port map (r_a,aux,sal,alu_op,zero);
 				
  comp_Memdato: Memoria_de_Datos
 			port map(clk,Sal,r_b,dat,MemWrite,MemRead);
  comp_UC: unidad_control
-			port map(instr,MemWrite,alu_sr,incond,cond,reg_w,memtoreg,MemRead,alu_o);
+			port map(instr,MemWrite,alu_sr,incond,cond,reg_w,memtoreg,MemRead,alu_op);
 			
  comp_mux1:multi
 			port map (alu_sr,imgen,r_b,aux);
