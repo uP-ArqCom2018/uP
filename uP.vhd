@@ -17,14 +17,14 @@
 	 N: integer :=32;
 	 anchodataout: integer :=32;
 	 opcode	:	integer	:=	32
-	  );
+	 	  );
      port (
          CLK_i: in std_logic;
-         reset: in std_logic);	
+         reset: in std_logic;
+			SAL_o :out std_logic_vector(13 downto 0));	
  end entity;
  
  architecture MyHDL of uP is
- 
  
 -- Componentes
  
@@ -43,8 +43,8 @@
 			RESET_i: in std_logic
 			);
 	end component PC;
-  
-  
+ 
+ 
   -- Componente: Memoria de Programa
   -- Autoes:Suarez,Parisi
   component Memoria_Programa is
@@ -192,6 +192,7 @@ begin
 				
  comp_Memdato: Memoria_de_Datos
 			port map(clk,Sal,r_b,dat,MemWrite,MemRead);
+			
  comp_UC: unidad_control
 			port map(instr,MemWrite,alu_sr,incond,cond,reg_w,memtoreg,MemRead,alu_op,NOzero);
 			
@@ -228,7 +229,11 @@ begin
 	c(2) <= instr(9);
 	c(3) <= instr(10);
 	c(4) <= instr(11);
-	
+	 
+	SAL_o (13 downto 0)<= dat(13 downto 0); --Asignacion de r_b para observar el 
+	--comportamiento de el almacenamiento de dato en memoria de Datos
+
+
 
 
 	    
