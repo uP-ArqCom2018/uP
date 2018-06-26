@@ -49,7 +49,7 @@ estimulos: process
 		reset<='0';
 		wait for 200 ns;
 		reset <='1';
-		wait for 100000 ns;
+		wait for 40000 ns;
 
 	end process;
   -- put concurrent statements here.
