@@ -229,12 +229,16 @@ begin
 	c(2) <= instr(9);
 	c(3) <= instr(10);
 	c(4) <= instr(11);
-	 
-	SAL_o (13 downto 0)<= dat(13 downto 0); --Asignacion de r_b para observar el 
-	--comportamiento de el almacenamiento de dato en memoria de Datos
+	
+	process (CLK_i)
+	begin
+		if (rising_edge(CLK_i) and MemWrite='1') then
+			
+			SAL_o (13 downto 0)<= r_b(13 downto 0); --Asignacion de r_b para observar el 
+			--comportamiento de el almacenamiento de dato en memoria de Datos
 
+		end if;
 
-
-
+	end process;
 	    
  end architecture MyHDL;

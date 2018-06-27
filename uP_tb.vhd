@@ -22,18 +22,21 @@ ARCHITECTURE Behavioral OF uP_tb IS
 	  );
      port (
          CLK_i: in std_logic;
-         reset: in std_logic);
+         reset: in std_logic;
+         SAL_o :out std_logic_vector(13 downto 0));	
+
   END COMPONENT; 
   
  
 	SIGNAL CLK_i: std_logic;
 	SIGNAL reset: std_logic;
+	SIGNAL SAL_o: std_logic_vector(13 downto 0);
   
 BEGIN
 
 
 micro: uP
-		port map(CLK_i,reset);
+		port map(CLK_i,reset,SAL_o);
 
 stimul_clk: process 
 	begin
