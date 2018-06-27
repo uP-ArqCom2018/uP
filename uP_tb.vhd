@@ -10,16 +10,7 @@ END ENTITY uP_tb;
 
 ARCHITECTURE Behavioral OF uP_tb IS
   -- put declarations here.
-  COMPONENT uP is
-     generic(
-	 bit_dir_reg : integer :=5;
-	 n_reg : integer := 64; 
-	 ancho_inst: integer := 8;
-	 ancho_address:integer := 10;
-	 N: integer :=32;
-	 anchodataout: integer :=32;
-	 opcode	:	integer	:=	32
-	  );
+  COMPONENT uP_completo is
      port (
          CLK_i: in std_logic;
          reset: in std_logic;
