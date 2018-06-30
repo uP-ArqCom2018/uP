@@ -1,23 +1,23 @@
 # Repositorio del Microprocesador
 
 ** info
- Este archivo contiene informacion util sobre los lineamientos 
-de cada bloque en particular como asi tambien las definiciones
+ Este archivo contiene información útil sobre los lineamientos 
+de cada bloque en particular como así también las definiciones
 del funcionamiento general del uP.
-Aqui se encuentra el repositorio del Microprocesador.
+Aquí se encuentra el repositorio del Microprocesador.
 
 
 Carpetas existentes:
 
-* **doc** incluye la documentacion.
-* **src** incluye las fuentes del proyecto.
-* **testbench** incluye los archivos de simulacion.
+* **doc** Incluye la documentación.
+* **src** Incluye las fuentes del proyecto.
+* **testbench** Incluye los archivos de simulacion.
 
-## Descripcion de funcionamiento
-Aqui se describe como funciona el modulo.
+## Descripción de funcionamiento
+Aquí se describe como funciona el módulo.
 
 ### Lineamientos generales para nombres:
-Al escribir el nombre de algun puerto, senal o variable, deben seguirse
+Al escribir el nombre de algún puerto, señal o variable, deben seguirse
 los siguientes lineamientos:
 
 * Puertos:
@@ -26,11 +26,11 @@ los siguientes lineamientos:
     
     *Salidas: < NOMBRE EN MAYUSCULA >_o
 
-* Se�ales:
+* Señales:
 
-    *Entradas: < nombre en minuscula >_i
+    *Entradas: < nombre en minúscula >_i
     
-    *Salidas: < nombre en minuscula >_o
+    *Salidas: < nombre en minúscula >_o
 
 
 ## Lineamientos generales
@@ -43,7 +43,7 @@ Memoria de programa y datos de 4kb
 
 ### Contador de programa 
 
-ademas del PC este bloque contendra los elementos basicos 
+Además del PC este bloque contendra los elementos básicos 
 para el manejo de saltos.
 
 * Entradas
@@ -55,7 +55,7 @@ para el manejo de saltos.
   
 * Salidas
 
-      D_o --> memoria de programa 
+      D_o --> Memoria de programa 
 
 ### Memoria de programa 
 * Entrada
@@ -66,8 +66,7 @@ para el manejo de saltos.
 
       D_o --> intruciones
 
-
-### memoria de datos 
+### Memoria de datos 
  mux_2 interno (dentro del bloque) 
  
 * Entradas 
@@ -79,37 +78,37 @@ para el manejo de saltos.
   
  * Salidas
  
-      W_c_i --> banco de registros
+      W_c_i --> Banco de registros
  
  ### ALU 
  mux_1 interno
   
     * Entradas
   
-      R_a_o   <-- banco de registros
-      R_b_o   <-- banco de registros
+      R_a_o   <-- Banco de registros
+      R_b_o   <-- Banco de registros
       64 Bits <-- ImmGen
       ALU_op  <-- ALU
       ALU_src <-- ALU
   
     * Salidas
   
-      Y_o   --> memoria de datos
-      Zero_o --> contador de programa
+      Y_o    --> Memoria de datos
+      Zero_o --> Contador de programa
     
  ## UC
   ALU_op es de 4 bits 
  
     * Entradas
  
-      instruccion <-- memoria de programa
+      instruccion <-- Memoria de programa
  
     * Salidas
  
-      ALU_op      -->  ALU
-      ALU_sr      -->  ALU  
-      Reg_w_i     --> banco de registros
-      R/W         --> memeria de datos
-      mem_reg     --> memoria de datos 
-      cond_Brach  --> program counter 
-      uncond_Brach  --> program counter
+      ALU_op        -->  ALU
+      ALU_sr        -->  ALU  
+      Reg_w_i       --> Banco de registros
+      R/W           --> Memeria de datos
+      mem_reg       --> Memoria de datos 
+      cond_Brach    --> Program counter 
+      uncond_Brach  --> Program counter
