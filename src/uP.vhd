@@ -17,14 +17,14 @@
 	 N: integer :=32;
 	 anchodataout: integer :=32;
 	 opcode	:	integer	:=	32
-	  );
+	 	  );
      port (
          CLK_i: in std_logic;
-         reset: in std_logic);	
+         reset: in std_logic;
+			SAL_o :out std_logic_vector(13 downto 0));	
  end entity;
  
  architecture MyHDL of uP is
- 
  
 -- Componentes
  
@@ -43,8 +43,8 @@
 			RESET_i: in std_logic
 			);
 	end component PC;
-  
-  
+ 
+ 
   -- Componente: Memoria de Programa
   -- Autoes:Suarez,Parisi
   component Memoria_Programa is
@@ -91,28 +91,24 @@
       Inmed_o : OUT    std_logic_vector(len_o - 1 downto 0) -- Inmediato de salida 
       );   
 END component ImmGen; 
+
+-- Componente: ALU
   
-component ALU is
-
-    generic (N : integer :=64);
-		  
-    port (
-        A_i      : in  std_logic_vector(N - 1 downto 0);
-        B_i      : in  std_logic_vector(N - 1 downto 0);
-        SAL_o    : out std_logic_vector(N - 1 downto 0);
-	    ALUop_i  : in  std_logic_vector(3 downto 0);
-	    Zero_o   : out std_logic
-        );
-end component;
-
-
-
+  component ALU is
+		generic (N : integer :=64);
+		port (
+			A_i      : in  std_logic_vector(N - 1 downto 0);
+			B_i      : in  std_logic_vector(N - 1 downto 0);
+			SAL_o    : out std_logic_vector(N - 1 downto 0);
+			ALUop_i  : in  std_logic_vector(3 downto 0);
+			Zero_o   : out std_logic);
+end component ALU;
   
   
   --Componente: Memoria de Datos
   --Autores: Chavez,Santamaria,Sanchez
 	component Memoria_de_Datos is
-	generic (size: integer :=64);
+	generic (size: integer :=10);
 	  
      port (
          CLK_i: in std_logic;
@@ -124,22 +120,21 @@ end component;
 			
 	end component Memoria_de_Datos;
 
-	component UC is
-	generic(
-		opcode	:	integer	:=	32
-	);
-	port(
-		INSTR_i	:	in		std_logic_vector(opcode-1 downto 0);		-- instruccion de entrada
-		Condbranch_o		:	out	std_logic;								-- salto
-		Ucondbranch_o	:	out	std_logic;									-- salto incondicional
-		MemRead_o	:	out	std_logic;										-- lectura de memoria
-		MemtoReg_o	:	out	std_logic;										-- memoria a registro
-		ALUop_o		:	out	std_logic_vector(3 downto 0);				-- seleccion de operacion de ALU
-		MemWrite_o	:	out	std_logic;										-- escritura de memoria
-		ALUsrc_o		:	out	std_logic;										-- selecciona entre un inmediato y un registro
-		Reg_W_o	:	out	std_logic);											-- escritura de registro
+	component unidad_control is
+	PORT(
+	INSTR_i: IN std_logic_vector(31 downto 0);
+	MemWrite_o: OUT std_logic;
+	ALUsrc_o: OUT std_logic;
+	Uncondbranch_o: OUT std_logic;
+	Condbranch_o: OUT std_logic;
+	Reg_W_o: OUT std_logic;
+	MemtoReg_o: OUT std_logic;
+	MemRead_o: OUT std_logic;
+	ALUop_o: OUT std_logic_vector(3 downto 0);
+	NOzero: OUT std_logic);  
 	
-end component UC;
+	end component unidad_control;
+	
 	
 	 component multi is
     
@@ -155,59 +150,91 @@ end component UC;
 --Señales
 
 --Señales de control
-	signal cond,incond: 	std_logic;   							--UC  -> PC 
-	signal zero	:  		std_logic;		 						--ALU -> PC
-	signal alu_sr:   		std_logic;		 						--UC  -> mux1
-	signal memtoreg:  	std_logic;		 						--UC  -> mux2 	
-	signal alu_op:   		std_logic_vector (3 downto 0);	--UC -> ALU
-	signal MemWrite,MemRead: 	std_logic; 						--UC -> memoria de datos
-	signal reg_w:			std_logic;								--UC -> banco de registros
-	
---Señales que conectan con puertos	
-	signal clk,rst: 	std_logic;
+	signal cond,incond: 	std_logic;   --UC  -> PC 
+	signal zero_i	:  		std_logic;		 --MUX -> PC
+	signal zero_o	:  		std_logic;		 --ALU -> MUX (bit 0)
+	signal alu_sr:   		std_logic;		 --UC  -> mux1
+	signal memtoreg:  	std_logic;		 --UC  -> mux2
+	signal alu_op:   		std_logic_vector (3 downto 0);--UC -> ALU
+	signal MemWrite,MemRead: 	std_logic; 		--UC -> memoria de datos
+	signal reg_w:			std_logic;		--UC -> banco de registros
+	signal NOzero:			std_logic;		-- UNIDAD DE CONTRO -> MUX
 	
 --Señales Internas
 	signal addr: 	std_logic_vector(ancho_address-1 downto 0); 
+	signal clk: 	std_logic;
+	signal imgen: 	std_logic_vector(2*N-1 downto 0);
+	signal rst:   	std_logic;
+	signal a,b,c: 	std_logic_vector(bit_dir_reg-1 downto 0);   
+   signal w_c: 	std_logic_vector(n_reg-1 downto 0);
+   signal r_a,r_b:	std_logic_vector(n_reg-1 downto 0);
 	signal instr:	std_logic_vector((4*ancho_inst)-1 downto 0);
-	signal r_a,r_b:	std_logic_vector(n_reg-1 downto 0);
-	signal imgen: 	std_logic_vector(2*N-1 downto 0);  
-   signal aux : 	std_logic_vector (63 downto 0);
 	signal sal:	std_logic_vector (63 downto 0);
+	signal aux : 	std_logic_vector (63 downto 0);
 	signal dat : 	std_logic_vector (63 downto 0);
-	signal w_c: 	std_logic_vector(n_reg-1 downto 0);
-   --signal data_o:	std_logic_vector (63 downto 0);
-	
 begin
  -- Mapeo de componentes
  
  comp_PC:PC
-		port map(addr,clk,imgen,incond,cond,zero,rst);
+		port map(addr,clk,imgen,incond,cond,zero_i,rst);
  
  comp_MemPro: Memoria_Programa
 			port map(clk,rst,addr,instr);
  
  comp_banco: bank_reg 
-			port map (instr(19 downto 15),instr(24 downto 20),instr(11 downto 7),reg_w,rst,clk,w_c,r_a,r_b);
+			port map (a,b,c,reg_w,rst,clk,w_c,r_a,r_b);
  
  comp_immgen: ImmGen
 			port map(instr,imgen);
 
  comp_alu: ALU
-			port map (r_a,aux,sal,alu_op,zero);
+			port map (r_a,aux,sal,alu_op,zero_o);
 				
  comp_Memdato: Memoria_de_Datos
 			port map(clk,Sal,r_b,dat,MemWrite,MemRead);
- comp_UC: UC
-			port map(instr,cond,incond,MemRead,memtoreg,alu_op,MemWrite,alu_sr,reg_w);
+			
+ comp_UC: unidad_control
+			port map(instr,MemWrite,alu_sr,incond,cond,reg_w,memtoreg,MemRead,alu_op,NOzero);
 			
  comp_mux1:multi
 			port map (alu_sr,imgen,r_b,aux);
 			
  comp_mux2:multi
 			port map (memtoreg,dat,sal,w_c);
+ 
+ 
 -- Asignaciones
+	--Agrego el mux para solucionar el problema del salto cuando es distinto de cero
+	WITH NOzero SELECT
+		zero_i<= not(zero_o) when '1',
+					zero_o when others;
+
 	
 	clk<=CLK_i;
 	rst<= reset;
-		    
+	
+	
+	a(0) <= instr(15);
+	a(1) <= instr(16);
+	a(2) <= instr(17);
+	a(3) <= instr(18);
+	a(4) <= instr(19);
+	b(0) <= instr(20);
+	b(1) <= instr(21);
+	b(2) <= instr(22);
+	b(3) <= instr(23);
+	b(4) <= instr(24);
+	c(0) <= instr(7);
+	c(1) <= instr(8);
+	c(2) <= instr(9);
+	c(3) <= instr(10);
+	c(4) <= instr(11);
+	 
+	SAL_o (13 downto 0)<= dat(13 downto 0); --Asignacion de r_b para observar el 
+	--comportamiento de el almacenamiento de dato en memoria de Datos
+
+
+
+
+	    
  end architecture MyHDL;
